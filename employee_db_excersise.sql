@@ -1,10 +1,9 @@
--- Running these commands didn't show in Object Explorer
--- CREATE DATABASE employee_db_exercise;
--- GO
+CREATE DATABASE employee_db_exercise;
+
+-- Schema doesn't show in object explorer
+-- also said it doesn't exist or can't be accessed
 -- CREATE SCHEMA Emp;
 -- GO
-
--- manually created database in SQL Management Studio
 -- Schema became dbo by default
 
 CREATE TABLE EmpDetails (
@@ -77,7 +76,7 @@ VALUES ( 321, 'Tina', 'Smith', '111-11-1111', 101 );
 INSERT INTO Department ( ID, Name, Location )
 VALUES ( 42, 'Marketing', '7299 Ketch Harbour Street, Berwyn, IL 60402' );
 
--- Add employees to Marketing to see data for Marketing queries
+-- Add employees as sample data with Marketing for queries
 INSERT INTO EmpDetails (EmployeeID, Salary, Address1, City, State, Country)
 VALUES (8, 50000, '8165 E. Magnolia St.', 'Ashburn', 'VA', 'USA');
 
@@ -98,19 +97,15 @@ WHERE DeptID = (
 );
 
 -- Report total salary of Marketing
-
--- unfinished
---SELECT SUM(Salary) as 'Total Salary' FROM EmpDetails
---WHERE EmployeeID = (
---	SELECT * FROM Employee
---	WHERE DeptID = (
---		SELECT ID FROM Department
---		WHERE Name = 'Marketing'
---	)
---);
+SELECT SUM( Salary ) as 'Total Salary of Marketing'
+FROM EmpDetails, Employee
+WHERE EmpDetails.EmployeeID = Employee.ID
+	AND Employee.DeptID = (SELECT ID FROM Department WHERE Name='Marketing');
 
 -- Report total employees by department
--- unfinished as well, does it require join
+SELECT Department.Name, COUNT(Employee.ID) as 'Employees in Department' FROM Employee, Department
+WHERE Employee.DeptID = Department.ID
+GROUP BY Department.Name
 
 -- Increase salary of Tina Smith to $90,000
 UPDATE EmpDetails
