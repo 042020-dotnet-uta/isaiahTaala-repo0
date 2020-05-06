@@ -5,9 +5,9 @@ using Microsoft.EntityFrameworkCore;
 
 namespace StoreApp.Models
 {
-    public class Stock
+    public class Inventory
     {
-        public int StockID { get; set; }
+        public int InventoryID { get; set; }
         public Product Product { get; set; }
         public int Quantity { get; set; }
         public Location Location { get; set; }

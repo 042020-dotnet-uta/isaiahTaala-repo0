@@ -58,7 +58,8 @@ namespace StoreApp.Migrations
                     OrderID = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     CustomerID = table.Column<int>(nullable: true),
-                    LocationID = table.Column<int>(nullable: true)
+                    LocationID = table.Column<int>(nullable: true),
+                    TimeStamp = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -78,10 +79,10 @@ namespace StoreApp.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Stocks",
+                name: "Inventories",
                 columns: table => new
                 {
-                    StockID = table.Column<int>(nullable: false)
+                    InventoryID = table.Column<int>(nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
                     ProductID = table.Column<int>(nullable: true),
                     Quantity = table.Column<int>(nullable: false),
@@ -89,15 +90,15 @@ namespace StoreApp.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Stocks", x => x.StockID);
+                    table.PrimaryKey("PK_Inventories", x => x.InventoryID);
                     table.ForeignKey(
-                        name: "FK_Stocks_Locations_LocationID",
+                        name: "FK_Inventories_Locations_LocationID",
                         column: x => x.LocationID,
                         principalTable: "Locations",
                         principalColumn: "LocationID",
                         onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
-                        name: "FK_Stocks_Products_ProductID",
+                        name: "FK_Inventories_Products_ProductID",
                         column: x => x.ProductID,
                         principalTable: "Products",
                         principalColumn: "ProductID",
@@ -132,6 +133,16 @@ namespace StoreApp.Migrations
                 });
 
             migrationBuilder.CreateIndex(
+                name: "IX_Inventories_LocationID",
+                table: "Inventories",
+                column: "LocationID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Inventories_ProductID",
+                table: "Inventories",
+                column: "ProductID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerID",
                 table: "Orders",
                 column: "CustomerID");
@@ -150,25 +161,15 @@ namespace StoreApp.Migrations
                 name: "IX_ProductOrders_ProductID",
                 table: "ProductOrders",
                 column: "ProductID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Stocks_LocationID",
-                table: "Stocks",
-                column: "LocationID");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Stocks_ProductID",
-                table: "Stocks",
-                column: "ProductID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ProductOrders");
+                name: "Inventories");
 
             migrationBuilder.DropTable(
-                name: "Stocks");
+                name: "ProductOrders");
 
             migrationBuilder.DropTable(
                 name: "Orders");

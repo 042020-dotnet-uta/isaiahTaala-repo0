@@ -7,16 +7,9 @@ namespace StoreApp.Models
 {
     public class Order
     {
-        readonly DateTime timeStamp;
-
         public int OrderID { get; set; }
         public Customer Customer { get; set; }
         public Location Location { get; set; }
-        public string TimeStamp { get; }
-
-        Order()
-        {
-            timeStamp = DateTime.Now;
-        }
+        public string TimeStamp { get; set; }
     }
 }

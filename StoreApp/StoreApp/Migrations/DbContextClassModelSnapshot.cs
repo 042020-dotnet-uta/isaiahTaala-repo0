@@ -39,6 +39,30 @@ namespace StoreApp.Migrations
                     b.ToTable("Customers");
                 });
 
+            modelBuilder.Entity("StoreApp.Models.Inventory", b =>
+                {
+                    b.Property<int>("InventoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("LocationID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("ProductID")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("Quantity")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("InventoryID");
+
+                    b.HasIndex("LocationID");
+
+                    b.HasIndex("ProductID");
+
+                    b.ToTable("Inventories");
+                });
+
             modelBuilder.Entity("StoreApp.Models.Location", b =>
                 {
                     b.Property<int>("LocationID")
@@ -70,6 +94,9 @@ namespace StoreApp.Migrations
 
                     b.Property<int?>("LocationID")
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("TimeStamp")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("OrderID");
 
@@ -121,28 +148,15 @@ namespace StoreApp.Migrations
                     b.ToTable("ProductOrders");
                 });
 
-            modelBuilder.Entity("StoreApp.Models.Stock", b =>
+            modelBuilder.Entity("StoreApp.Models.Inventory", b =>
                 {
-                    b.Property<int>("StockID")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("INTEGER");
+                    b.HasOne("StoreApp.Models.Location", "Location")
+                        .WithMany()
+                        .HasForeignKey("LocationID");
 
-                    b.Property<int?>("LocationID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int?>("ProductID")
-                        .HasColumnType("INTEGER");
-
-                    b.Property<int>("Quantity")
-                        .HasColumnType("INTEGER");
-
-                    b.HasKey("StockID");
-
-                    b.HasIndex("LocationID");
-
-                    b.HasIndex("ProductID");
-
-                    b.ToTable("Stocks");
+                    b.HasOne("StoreApp.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductID");
                 });
 
             modelBuilder.Entity("StoreApp.Models.Order", b =>
@@ -161,17 +175,6 @@ namespace StoreApp.Migrations
                     b.HasOne("StoreApp.Models.Order", "Order")
                         .WithMany()
                         .HasForeignKey("OrderID");
-
-                    b.HasOne("StoreApp.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductID");
-                });
-
-            modelBuilder.Entity("StoreApp.Models.Stock", b =>
-                {
-                    b.HasOne("StoreApp.Models.Location", "Location")
-                        .WithMany()
-                        .HasForeignKey("LocationID");
 
                     b.HasOne("StoreApp.Models.Product", "Product")
                         .WithMany()
