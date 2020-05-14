@@ -11,7 +11,7 @@ namespace StoreApp
 {
     public class UserInterface
     {
-        private DataAccessLayer Dal { get; } = new DataAccessLayer();
+        private DataAccessLayer Dal { get; set;  } = new DataAccessLayer();
         private Customer CurrentUser { get; set; }
         private string[] MenuOptions = {
             "Place order for customer",
@@ -182,11 +182,14 @@ namespace StoreApp
         {
             Console.WriteLine("Display details of a customer's order");
             Customer customer = GetCustomer();
+
+            Console.WriteLine($"Customer is {customer.FirstName} {customer.LastName}");
             int orderID = GetOrderID(customer);
-            Order order = Dal.GetCustomerOrder(orderID);
+            Order order = Dal.GetCustomerOrder(customer.CustomerID, orderID-1);
+            Console.WriteLine(order);
 
             Console.WriteLine($"Order {orderID}");
-            Console.WriteLine($"Customer = {customer.FirstName} {customer.LastName} {customer.Email} ");
+            Console.WriteLine($"Customer = {order.Customer.FirstName} {order.Customer.LastName} {order.Customer.Email} ");
             Console.WriteLine($"Location = {order.Location.Address}, {order.Location.City}, {order.Location.State}");
             Console.WriteLine($"TimeStamp = {order.TimeStamp}");
             DisplayProductOrders(orderID);
@@ -202,12 +205,10 @@ namespace StoreApp
             int total = 0;
             foreach (ProductOrder po in productOrders)
             {
-                int poPrice = po.Product.Price * po.Quantity;
-                total += poPrice;
-
+                total += po.Product.Price * po.Quantity;
                 Console.Write($"Product = {po.Product.Name}, ");
                 Console.Write($"Quantity = {po.Quantity}");
-                Console.Write($"Price = {poPrice}");
+                Console.Write($"Price = {po.Product.Price}");
                 Console.WriteLine();
             }
             Console.WriteLine($"Total = {total}");
@@ -260,6 +261,7 @@ namespace StoreApp
             Console.WriteLine($"Order history from {customerRecord}");
 
             List<Order> orders = Dal.GetCustomerOrderHistory(customer.CustomerID);
+          
             foreach (Order o in orders)
             {
                 string fullAddress = $"{o.Location.Address}, {o.Location.City}, {o.Location.State}";
@@ -309,7 +311,7 @@ namespace StoreApp
         private int GetOrderID(Customer customer)
         {
             int totalCustomerOrders = Dal.GetTotalCustomerOrders(customer.CustomerID);
-            return GetInt($"Enter an OrderID by number (0 - {totalCustomerOrders})", 0, totalCustomerOrders-1);
+            return GetInt($"Enter an OrderID by number (1 - {totalCustomerOrders})", 1, totalCustomerOrders);
         }
 
         private void InventoryOf(Location location)
@@ -318,9 +320,10 @@ namespace StoreApp
             List<Inventory> inventory = Dal.GetInventory(location);
             foreach(Inventory i in inventory)
             {
-                Console.Write($"Product = {i.Product.ProductID} ");
-                Console.Write($"Quantity = {i.Quantity} ");
-                Console.WriteLine();
+                Console.WriteLine(i);
+                //Console.Write($"Product = {i.Product.ProductID} ");
+                //Console.Write($"Quantity = {i.Quantity} ");
+                //Console.WriteLine();
             }
         }
 
@@ -422,6 +425,12 @@ namespace StoreApp
 
         private int GetInt(string prompt, int min, int max)
         {
+            if(min > max)
+            {
+                int temp = min;
+                min = max;
+                max = min;
+            }
             while (true)
             {
                 int validNumber = GetInt(prompt);

@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using System.Linq;
 using System.Text;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
+using Microsoft.EntityFrameworkCore;
 using StoreApp.Models;
 
 namespace StoreApp
@@ -43,14 +45,29 @@ namespace StoreApp
         {
             return db.Orders.Where(
                 order => order.OrderID == orderID
-                ).FirstOrDefault();
+                )
+                .Include(o=> o.Customer)
+                .Include(o=> o.Location)
+                .FirstOrDefault();
+        }
+
+        public Order GetCustomerOrder(int customerID, int index)
+        {
+            return db.Orders.Where(
+                o => o.Customer.CustomerID == customerID
+                )
+                .Include(o => o.Customer)
+                .Include(o => o.Location)
+                .ToList()[index];
         }
 
         public List<ProductOrder> GetProductOrders(int orderID)
         {
             return db.ProductOrders.Where(
                 productOrder => productOrder.Order.OrderID == orderID
-                ).ToList();
+                )
+                .Include(po => po.Product)
+                .ToList();
         }
 
         public List<Order> GetCustomerOrderHistory(int customerID)
@@ -92,6 +109,26 @@ namespace StoreApp
             return db.Customers.ToList();
         }
 
+        public List<Order> GetAllOrders()
+        {
+            return db.Orders.ToList();
+        }
+
+        public List<ProductOrder> GetAllProductOrders()
+        {
+            return db.ProductOrders.ToList();
+        }
+
+        public List<Product> GetAllProducts()
+        {
+            return db.Products.ToList();
+        }
+
+        public List<Inventory> GetAllInventories()
+        {
+            return db.Inventories.ToList();
+        }
+
         public bool CustomerInDB(Customer customer)
         {
             return db.Customers.Where(
@@ -125,5 +162,10 @@ namespace StoreApp
                 p => p.ProductID == productID)
                 .FirstOrDefault();
         }
+
+        //public Location GetLocation(int orderID)
+        //{
+        //    //return db.Orders.Where(o => o.OrderID == )
+        //}
     }
 }
