@@ -8,7 +8,7 @@ namespace StoreApp
         {
             UserInterface ui = new UserInterface();
             ui.Run();
-            Console.WriteLine("Yaml test");
+            Console.WriteLine("Yaml test again");
         }
     }
 }
