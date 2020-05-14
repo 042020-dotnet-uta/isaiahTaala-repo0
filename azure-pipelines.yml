@@ -1,0 +1,22 @@
+trigger: 
+  - master
+  
+pool:
+  vmImage: 'ubuntu-latest'
+
+stages:
+  - stage:
+    jobs:
+      - job: 'build'
+        steps:
+          - script: dotnet build "StoreApp\StoreApp.sln"
+      - job: 'test'
+        dependsOn: 'build'
+        steps:
+          - script: dotnet test "StoreApp\StoreApp.sln"
+      - job: 'publish'
+        dependsOn: 'test'
+        steps:
+          - script: dotnet publish "StoreApp\StoreApp.sln"
+
+name: '$(date:yyyyMMdd)$(rev:rr)'
